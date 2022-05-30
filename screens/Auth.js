@@ -1,13 +1,10 @@
 import { View, Text, TextInput, TouchableOpacity } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
 import { selectError, selectUser, setError, setUser } from '../slices/authSlice';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import users from '../mock-data/user';
-import screens from '../mock-data/allScreen';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Role from './Role';
 
-const Stack = createNativeStackNavigator();
 
 const Auth = () => {
   const dispatch = useDispatch();
@@ -34,7 +31,6 @@ const Auth = () => {
   }
 
   const requestDataRegister = () => {
-    console.log('Register')
     clearForm();
   }
 
@@ -65,20 +61,7 @@ const Auth = () => {
   return (
     <>
     {user ?       
-      <NavigationContainer>
-        <Stack.Navigator>
-
-            {screens.map( ({id, title, screen, headerShown}) => 
-              <Stack.Screen 
-                key={id}
-                options={{
-                  headerShown: headerShown,
-                  title: ''
-                }}
-                name={title} 
-                component={screen}/>)}
-        </Stack.Navigator>
-      </NavigationContainer> : 
+      <Role user={user}/> : 
       <View style={{
         flex: 1,
         backgroundColor: "#fff",
@@ -152,7 +135,7 @@ const Auth = () => {
                 <Text>{error}</Text>
             </View>
          }
-    </View>
+      </View>
      }
     </>
   )

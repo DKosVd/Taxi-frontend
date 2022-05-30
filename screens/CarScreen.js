@@ -6,7 +6,6 @@ import tw from 'tailwind-react-native-classnames';
 import streets from '../mock-data/streets';
 import RenderStreet from '../components/RenderStreet';
 import Sidebar from '../components/Sidebar';
-import Blind from '../components/Blind';
 import { getCoordinates, getDuration } from '../api/streetAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCoordinatesByAddress, fetchDurationBetweenTwoStreet, selectOrigin, selectDuration } from '../slices/navSlice';
@@ -21,7 +20,7 @@ const renderStreet = ({item}) => {
   return <RenderStreet streetName={item.streetName} time={item.time} />
 } 
 
-const CarScreen = () => {
+const CarScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const coordinates = useSelector(selectOrigin);
   const duration = useSelector(selectDuration);
@@ -80,23 +79,9 @@ const CarScreen = () => {
       });
     }
     positionWatch();
-    // if (hasLocationPermission) {
-    //   Geolocation.getCurrentPosition(
-    //       (position) => {
-    //         console.log(position);
-    //       },
-    //       (error) => {
-    //         // See error code charts below.
-    //         console.log(error.code, error.message);
-    //       },
-    //       { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    //   );
-    // }
-    // getDur();
   }, []);
 
   React.useEffect(() => {
-    // console.log('coord', coordinates)
     if(coordinates && mapRef.current) {
       const {latitude, longitude} = coordinates;
       mapRef.current.animateCamera({center: {latitude, longitude}, zoom: 15}, {duration: 1000});
@@ -129,7 +114,7 @@ const CarScreen = () => {
   }
 
   const handleFetchDuration = () => {
-    console.log(address)
+    console.log(route.params.socket)
     dispatch(fetchDurationBetweenTwoStreet({from:address.addressFrom, to:address.addressTo}));
   }
 

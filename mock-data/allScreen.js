@@ -72,4 +72,13 @@ const screens = [
     }
 ]
 
+export const screensForDriver = [
+    {
+        id: '1234',
+        headerShown: false,
+        title: 'CarScreen',
+        screen: CarScreen
+    },
+]
+
 export default screens;
