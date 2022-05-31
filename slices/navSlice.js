@@ -17,7 +17,7 @@ export const fetchCoordinatesByAddress = createAsyncThunk('street/coordinates', 
 
 export const fetchDurationBetweenTwoStreet = createAsyncThunk('street/duration', async (streets) => {
     const {from, to} = streets;
-    const response = await getDuration('Россия' + from, 'Россия' + to);
+    const response = await getDuration('Россия ' + from, 'Россия ' + to);
     return response;
 })
 

@@ -9,6 +9,7 @@ import Sidebar from '../components/Sidebar';
 import { getCoordinates, getDuration } from '../api/streetAPI';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCoordinatesByAddress, fetchDurationBetweenTwoStreet, selectOrigin, selectDuration } from '../slices/navSlice';
+import { SocketContext } from '../socket/socket';
 
 const initialState = {
   initialText: 'Куда едем?',
@@ -24,6 +25,8 @@ const CarScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const coordinates = useSelector(selectOrigin);
   const duration = useSelector(selectDuration);
+
+  const socket = React.useContext(SocketContext);
 
   const [currentPosition, setCurrentPosition] = React.useState(null);
 
@@ -72,14 +75,20 @@ const CarScreen = ({navigation, route}) => {
         console.log('REJECTED')
         return;
       } 
-      Location.watchPositionAsync({accuracy:Location.Accuracy.BestForNavigation, timeInterval: 1000, distanceInterval: 1},  ({coords}) => {
-        console.log(coords)
+      Location.watchPositionAsync({accuracy:Location.Accuracy.BestForNavigation, timeInterval: 3000, distanceInterval: 1},  ({coords}) => {
         setCurrentPosition( {'latitude':coords.latitude, 'longitude':coords.longitude} );
         mapRef.current.animateCamera({center: {'latitude':coords.latitude, 'longitude':coords.longitude}, zoom: 15}, {duration: 1000});
       });
     }
     positionWatch();
   }, []);
+
+  React.useEffect(() => {
+    socket.emit('TAXI_GET_DRIVER');
+    socket.on('TAXI_SEND_DRIVER', (data) => {
+      console.log(data);
+    })
+  }, [duration])
 
   React.useEffect(() => {
     if(coordinates && mapRef.current) {
@@ -114,7 +123,6 @@ const CarScreen = ({navigation, route}) => {
   }
 
   const handleFetchDuration = () => {
-    console.log(route.params.socket)
     dispatch(fetchDurationBetweenTwoStreet({from:address.addressFrom, to:address.addressTo}));
   }
 

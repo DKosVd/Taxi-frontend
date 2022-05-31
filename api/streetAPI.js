@@ -12,11 +12,17 @@ export async function getCoordinates(street) {
 
 
 export async function getDuration(from, to) {
-    const {data} = await axios.post('/street/duration/', {
-        from, to
-    });
-    if(!data){
-        return 'Нет совпадений';
+    try {
+        console.log(from, to)
+        const {data} = await axios.post('/street/duration/', {
+            from, to
+        });
+        console.log(data)
+        if(!data){
+            return 'Нет совпадений';
+        }
+        return data;
+    } catch(err) {
+        console.log(err)
     }
-    return data;
 }

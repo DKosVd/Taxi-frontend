@@ -1,24 +1,19 @@
 import { NavigationContainer } from '@react-navigation/native';
-import React from 'react'
+import React, { useReducer } from 'react'
 import screens, { screensForDriver } from '../mock-data/allScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {io} from 'socket.io-client';
+import { SocketContext } from '../socket/socket';
+
 
 const Stack = createNativeStackNavigator();
 
 const Role = ({user}) => {
-    const [socket, setSocket] = React.useState(null);
+  const socket = React.useContext(SocketContext);
     React.useEffect(() => {
-        const newSocket = io("http://192.168.0.109:3003", {
-          query: user.role !== 'pass' ? user: null
-        });
-        setSocket(newSocket);
-        newSocket.emit('msgToServer', JSON.stringify('hello'));
-        newSocket.on('msgToClient', (data) => {
-          console.log(data);
-        })
-        return () => newSocket.close();
-    }, [setSocket]);
+      if(user.role === 'driver') {
+        socket.emit('TAXI_CONNECT', JSON.stringify(user));
+      }
+    }, [socket]);
 
   return (
     <>
